@@ -1,7 +1,7 @@
 ### GUIA DE ESTUDIO PARCIAL 2 
 
 
-## POSIBLE PARCIAL 
+# POSIBLE PARCIAL 
 Creación de API para estudiantes del siguientes semestres
 * El usuario se registra y obtiene un API KEY 
 * El usuario envia el TOKEN como header para acceder a ciertos recursos
@@ -22,7 +22,7 @@ Agregar variables de entorno base de datos para docker
 DB_PASSWORD=clave
 DB_NAME=nombre
 ```
-# Levantar base de datos local docker
+## Levantar base de datos local docker
 ejecuta docker compose para desplegar la base de datos
 * va buscar el archivo docker-compose.yml 
 ``` 
@@ -39,4 +39,59 @@ password: <la misma del .env>
 
 remover carpeta de /postgres en el .gitignore para no subir información
 innecesaria al repositorio. 
+
+## Conectar Postgres con Nest
+
+### variables de entorno
+Para empezar vamos a preparar Nest para que pueda recibir variables de entorno
+* instalar modulo de config 
+```npm i @nestjs/config```
+
+* configurar el archivo app.module.ts
+```
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [ConfigModule.forRoot()], // módulo de variables de entorno
+})
+export class AppModule {}
+```
+
+### agregar drivers bases de datos
+* el último driver va variar dependiendo la base de datos que uses
+```
+npm i @nestjs/typeorm typeorm pg
+```
+
+agregar variables de entorno relacionadas a DB faltantes
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+```
+
+* configurar app.module.ts, solamente habrá un forRoot en el proyecto
+```
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT!,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      autoLoadEntities: true,
+      synchronize: true, // SOLO EN DESARROLLO
+    })
+  ],
+})
+export class AppModule {}
+```
 
