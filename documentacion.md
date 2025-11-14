@@ -187,6 +187,11 @@ en cloud es necesario agregar
 primero vamos agregar variable de entorno que indique el environment 
 ```
 STAGE=prod
+DB_PASSWORD=MYejo123o1289dahsdaslkl
+DB_NAME=guiaBD
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
 ```
 Luego vamos a nuestro app.module.ts, es necesario agregar seguridad para conexiones cloud en nuestro
 typeOrm.forRoot
