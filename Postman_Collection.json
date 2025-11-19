@@ -1,0 +1,289 @@
+{
+  "info": {
+    "_postman_id": "u-t-g-api-collection",
+    "name": "API REST - Productos con API Keys",
+    "description": "Colección completa de peticiones para la API de productos con autenticación por API Keys",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 AUTENTICACIÓN",
+      "item": [
+        {
+          "name": "1. Registrar y obtener API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Genera una nueva API Key para usar en peticiones protegidas.\n\nResponde con: { \"apiKey\": \"uuid-aqui\" }\n\n⚠️ GUARDA ESTE VALOR EN LA VARIABLE: {{api_key}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 PRODUCTOS - PÚBLICOS",
+      "item": [
+        {
+          "name": "2. GET - Listar todos los productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products"]
+            },
+            "description": "Obtiene todos los productos (ENDPOINT PÚBLICO - sin API Key)\n\nOpciones de query:\n- limit: número de productos (default: 10)\n- offset: productos a saltar (default: 0)\n\nEjemplo: http://localhost:4000/api/products?limit=5&offset=0"
+          },
+          "response": []
+        },
+        {
+          "name": "3. GET - Obtener producto por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Obtiene un producto específico por su ID (ENDPOINT PÚBLICO - sin API Key)\n\nIncluye las imágenes relacionadas\n\n⚠️ Reemplaza {{product_id}} con el ID real o usa la variable guardada"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "➕ PRODUCTOS - CREAR (PROTEGIDO)",
+      "item": [
+        {
+          "name": "4. POST - Crear producto con imágenes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Laptop Gaming RTX 4090\",\n  \"price\": 1999.99,\n  \"description\": \"Laptop de alto rendimiento con procesador i9 y RTX 4090\",\n  \"sizes\": [\"15 pulgadas\", \"17 pulgadas\"],\n  \"active\": true,\n  \"images\": [\n    \"https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500\",\n    \"https://images.unsplash.com/photo-1588872657840-790ff3bde172?w=500\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products"]
+            },
+            "description": "Crea un nuevo producto (PROTEGIDO - requiere API Key)\n\n⚠️ El header 'x-api-key' contiene {{api_key}}\n\nCampos requeridos:\n- title: string (mínimo 1 carácter, único)\n- sizes: array de strings\n\nCampos opcionales:\n- price: número positivo\n- description: string\n- active: boolean (default: false)\n- images: array de URLs"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "✏️ PRODUCTOS - ACTUALIZAR (PROTEGIDO)",
+      "item": [
+        {
+          "name": "5. PATCH - Actualizar producto",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Laptop Gaming Ultra Pro RTX 4090\",\n  \"price\": 2299.99,\n  \"description\": \"Versión mejorada del producto anterior\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Actualiza un producto existente (PROTEGIDO - requiere API Key)\n\n⚠️ Reemplaza {{product_id}} con el ID del producto a actualizar\n⚠️ El header 'x-api-key' contiene {{api_key}}\n\nPuedes actualizar cualquier combinación de campos (todos opcionales)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗑️ PRODUCTOS - ELIMINAR (PROTEGIDO)",
+      "item": [
+        {
+          "name": "6. DELETE - Eliminar producto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/products/{{product_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Elimina un producto (PROTEGIDO - requiere API Key)\n\n⚠️ Reemplaza {{product_id}} con el ID del producto a eliminar\n⚠️ El header 'x-api-key' contiene {{api_key}}\n\n⚠️ Esta acción es irreversible"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "❌ CASOS DE ERROR",
+      "item": [
+        {
+          "name": "Error: Sin API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Producto Test\",\n  \"sizes\": [\"M\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products"]
+            },
+            "description": "Intenta crear un producto SIN enviar la API Key\n\nRespuesta esperada (401 Unauthorized):\n```json\n{\n  \"message\": \"Missing API key in x-api-key header\",\n  \"error\": \"Unauthorized\",\n  \"statusCode\": 401\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Error: API Key inválida",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "invalid-key-12345"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Producto Test\",\n  \"sizes\": [\"M\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products"]
+            },
+            "description": "Intenta crear un producto con una API Key INVÁLIDA\n\nRespuesta esperada (401 Unauthorized):\n```json\n{\n  \"message\": \"Invalid API key\",\n  \"error\": \"Unauthorized\",\n  \"statusCode\": 401\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Error: DTO Inválido (Validación fallida)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"price\": -100,\n  \"sizes\": \"invalid\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products"]
+            },
+            "description": "Intenta crear un producto con datos INVÁLIDOS\n\nErrores esperados:\n- title vacío\n- price negativo\n- sizes no es un array\n\nRespuesta esperada (400 Bad Request):\n```json\n{\n  \"message\": [\n    \"title should not be empty\",\n    \"price must be a positive number\",\n    \"sizes must be an array\"\n  ],\n  \"error\": \"Bad Request\",\n  \"statusCode\": 400\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Error: Producto no encontrado (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/products/00000000-0000-0000-0000-000000000000",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Intenta obtener un producto con un ID que NO existe\n\nRespuesta esperada (404 Not Found):\n```json\n{\n  \"message\": \"Producto con el id 00000000-0000-0000-0000-000000000000 no fue encontrado\",\n  \"error\": \"Not Found\",\n  \"statusCode\": 404\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string",
+      "description": "API Key obtenida del endpoint /api/auth/register"
+    },
+    {
+      "key": "product_id",
+      "value": "",
+      "type": "string",
+      "description": "ID del producto creado para usar en consultas específicas"
+    }
+  ]
+}

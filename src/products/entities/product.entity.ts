@@ -29,7 +29,7 @@ export class Product {
     @ApiProperty()
     @Column('text', {
         array: true
-    })
+    })  
     sizes: string[]
     
     @ApiProperty()

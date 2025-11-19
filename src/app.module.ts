@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
-import { CommonModule } from './common/common.module';
-import { MatematicasModule } from './matematicas/matematicas.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      ssl:process.env.STAGE==='prod'?true: false,
       type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT!,
@@ -19,9 +17,8 @@ import { MatematicasModule } from './matematicas/matematicas.module';
       autoLoadEntities: true,
       synchronize: true, // SOLO EN DESARROLLO
     }),
+    AuthModule,
     ProductsModule,
-    CommonModule,
-    MatematicasModule
   ],
 })
 export class AppModule {}

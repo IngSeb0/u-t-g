@@ -13,8 +13,8 @@ async function bootstrap() {
     })
   )
 
-  const config = new DocumentBuilder().
-                setTitle('Class Backend')
+    const config = new DocumentBuilder().
+                setTitle('Products Backend')
                 .setDescription('Products API')
                 .setVersion('1.0')
                 .build()

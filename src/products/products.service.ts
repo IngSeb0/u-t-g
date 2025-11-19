@@ -49,20 +49,36 @@ export class ProductsService {
    }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Product> {
     try {
-      const product = await this.productRepository.findOneBy({id})
+      const product = await this.productRepository.findOne({
+        where: { id },
+        relations: { images: true }
+      })
       if(!product){
         throw new NotFoundException(`Producto con el id ${id} no fue encontrado`)
       }
       return product;
     } catch (error) {
       this.handleDBExceptions(error)
+      throw error;
     }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    try {
+      const product = await this.findOne(id);
+      
+      // Merge updates
+      Object.assign(product, updateProductDto);
+      
+      // Save changes
+      await this.productRepository.save(product);
+      
+      return product;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async remove(id: string) {
